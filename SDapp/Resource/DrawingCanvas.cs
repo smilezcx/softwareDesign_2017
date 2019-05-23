@@ -9,7 +9,7 @@ using System.Windows.Media;
 namespace SoftwareDesign_2017
 {
     /// <summary>
-    /// 此类引用自https://www.yuanmas.com/info/n4Ob3vvLzw.html，感谢博主
+    /// 此类的实现参考https://www.yuanmas.com/info/n4Ob3vvLzw.html，感谢博主
     /// </summary>
     class DrawingCanvas : Canvas
     {
@@ -18,15 +18,22 @@ namespace SoftwareDesign_2017
         #endregion
 
         #region 公有方法
-
+        /// <summary>
+        /// 将visual对象添加到视觉树和逻辑树
+        /// </summary>
+        /// <param name="visual">要添加的visual对象</param>
         public void AddVisual(Visual visual)
         {
             _visuals.Add(visual);
 
-            base.AddLogicalChild(visual);
-            base.AddVisualChild(visual);
+            base.AddLogicalChild(visual);//将对象添加到逻辑树
+            base.AddVisualChild(visual);//定义视觉对象的父子关系
         }
 
+        /// <summary>
+        /// 将指定的visual对象从视觉树和逻辑树移除
+        /// </summary>
+        /// <param name="visual"></param>
         public void RemoveVisual(Visual visual)
         {
             _visuals.Remove(visual);
@@ -35,6 +42,9 @@ namespace SoftwareDesign_2017
             base.RemoveVisualChild(visual);
         }
 
+        /// <summary>
+        /// 将逻辑树和视觉树全部清空
+        /// </summary>
         public void RemoveAll()
         {
             while (_visuals.Count != 0)
@@ -45,17 +55,19 @@ namespace SoftwareDesign_2017
                 _visuals.RemoveAt(0);
             }
         }
-        
-        #endregion
 
-        #region 构造
-
-        public DrawingCanvas()
+        /// <summary>
+        /// 在指定的索引出移除一个visual对象
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveAt(int index)
         {
-            Width = 200;
-            Height = 200;
+            base.RemoveLogicalChild(_visuals[index]);
+            base.RemoveVisualChild(_visuals[index]);
+            _visuals.RemoveAt(index);
         }
-        #endregion
+        
+        #endregion        
 
         #region 重写
         protected override int VisualChildrenCount
@@ -66,6 +78,11 @@ namespace SoftwareDesign_2017
             }
         }
 
+        /// <summary>
+        /// 获取指定索引的visual对象
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <returns>索引到的visual对象</returns>
         protected override Visual GetVisualChild(int index)
         {
             return _visuals[index];

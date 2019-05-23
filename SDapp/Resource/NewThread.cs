@@ -14,11 +14,12 @@ namespace SoftwareDesign_2017
     {
         public void StartThread()
         {
-            Graphic graphic = new Graphic(points,whichFigure);
+            Graphic graphic = new Graphic(dictionary,WhichMode);
             graphic.ShowDialog();
         }
 
-        public List<Point> points = new List<Point>();
-        public string whichFigure;
+        public Dictionary<string, List<Point>> dictionary = new Dictionary<string, List<Point>>();//为方便在画图时知道曲线的名字创建的字典
+        
+        public string WhichMode { set; get; }//指示所画图形为bpsk还是boc
     }
 }

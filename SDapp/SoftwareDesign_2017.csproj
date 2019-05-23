@@ -13,7 +13,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>G:\grade3\2017软件课设\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,10 +24,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -53,7 +55,19 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>images\icon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>AF530AF3C96CE82B3E1793FBE790AA5F4619C78C</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SoftwareDesign_2017_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -76,26 +90,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Advance.xaml.cs">
+      <DependentUpon>Advance.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BeginWindow.xaml.cs">
       <DependentUpon>BeginWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="BocBpskSeq\BOC_Sequence_Generate.cs" />
     <Compile Include="BocBpskSeq\BPSK_Sequence_Generate.cs" />
+    <Compile Include="BocBpskSeq\Error.cs" />
     <Compile Include="BocBpskSeq\Param.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Resource\Context.cs" />
     <Compile Include="Resource\DrawingCanvas.cs" />
+    <Compile Include="DrawGraphic.xaml.cs">
+      <DependentUpon>DrawGraphic.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Graphic.xaml.cs">
       <DependentUpon>Graphic.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resource\GraphicContext.cs" />
     <Compile Include="PaintAndSavePic\SavePic.cs" />
     <Compile Include="Resource\NewThread.cs" />
+    <Compile Include="Resource\Colors.cs" />
     <Compile Include="Resource\ViewParaContext.cs" />
     <Compile Include="ViewPara.xaml.cs">
       <DependentUpon>ViewPara.xaml</DependentUpon>
     </Compile>
+    <Page Include="Advance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BeginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawGraphic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -136,6 +165,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="SoftwareDesign_2017_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -155,19 +185,43 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\icon.ico" />
+    <Resource Include="Images\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\Sa.png" />
+    <Resource Include="Images\Sa.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\hui.jpg" />
+    <Resource Include="Images\hui.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\th.jpg" />
+    <Resource Include="Images\th.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\icon1.png" />
+    <Resource Include="Images\icon1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\dengpao2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\graphic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\para.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\paidaxing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\zoom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\zoom_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Grid.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

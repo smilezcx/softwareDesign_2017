@@ -11,26 +11,37 @@
       <RowDefinition Height="89*"/>
       <RowDefinition Height="381*"/>
     </Grid.RowDefinitions>
-    <TextBox HorizontalAlignment="Left" Height="23" Margin="323,17.5,0,0" TextWrapping="Wrap" Text="{Binding Path=FrequenceBpsk}" VerticalAlignment="Top" Width="120"/>
-    <TextBox HorizontalAlignment="Left" Height="22.5" Margin="323,45.933,0,0" TextWrapping="Wrap" Text="{Binding Path=Alpha}" VerticalAlignment="Top" Width="120"/>
-    <TextBox HorizontalAlignment="Left" Height="22.5" Margin="486.5,45.933,0,0" TextWrapping="Wrap" Text="{Binding Path=Beta}" VerticalAlignment="Top" Width="123"/>
-    <Button x:Name="addButton" Content="添加" HorizontalAlignment="Left" Margin="680.5,16.43,0,0" VerticalAlignment="Top" Width="75" Style="{StaticResource buttonStyle}" Click="AddButton_Click"/>
-    <ListView x:Name="listView" HorizontalAlignment="Left" Height="380.189" Grid.Row="1" VerticalAlignment="Top" Width="792">
+    <Grid Grid.Row="0" Background="#FFF4F4F5">
+      <TextBox HorizontalAlignment="Left" Height="22" Margin="170,18,0,0" TextWrapping="Wrap" Text="{Binding Path=FrequenceBpsk}" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
+      <TextBox HorizontalAlignment="Left" Height="22" Margin="170,46,0,0" TextWrapping="Wrap" Text="{Binding Path=Alpha}" VerticalAlignment="Top" Width="120" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
+      <TextBox HorizontalAlignment="Left" Height="22" Margin="438,48,0,0" TextWrapping="Wrap" Text="{Binding Path=Beta}" VerticalAlignment="Top" Width="122" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
+      <Button x:Name="addButton" Content="添加" HorizontalAlignment="Right" Margin="0,16,75,0" VerticalAlignment="Top" Width="52" Style="{StaticResource buttonStyle}" Click="AddButton_Click" IsDefault="True"/>
+      <Button x:Name="saveButton" Content="保存" HorizontalAlignment="Right" Margin="0,64,10,0" VerticalAlignment="Top" Width="118" Style="{StaticResource buttonStyle}" Click="Save_Button_Click"/>
+      <Label Content="BPSK参数扩频码速率f:" HorizontalAlignment="Left" Height="26" Margin="37,18,0,0" VerticalAlignment="Top" Width="133"/>
+      <Label Content="BOC参数扩频码速率α:" HorizontalAlignment="Left" Height="26" Margin="38,44,0,0" VerticalAlignment="Top" Width="132"/>
+      <Label Content="BOC参数亚载波速率β:" HorizontalAlignment="Left" Height="26" Margin="307,46,0,0" VerticalAlignment="Top" Width="131"/>
+      <TextBlock HorizontalAlignment="Left" Height="38" Margin="307,10,0,0" TextWrapping="Wrap" Text="说明：请输入参数后再点击添加按钮。每次可同时添加BPSK和BOC参数。由于自相关函数计算较缓慢，请耐心等待。" VerticalAlignment="Top" Width="340" Foreground="#FFAE1212"/>
+      <Button x:Name="removeButton" Content="删除" HorizontalAlignment="Right" Margin="0,16,10,0" VerticalAlignment="Top" Width="52" Style="{StaticResource buttonStyle}" Click="Remove_Button_Click" IsDefault="True"/>
+      <Button x:Name="removeAllButton" Content="全部清除" HorizontalAlignment="Right" Margin="0,41,10,0" VerticalAlignment="Top" Width="118" Style="{StaticResource buttonStyle}" Click="RemoveAll_Button_Click" Background="#FFCF2F2F"/>
+      <Button x:Name="advance" Content="首选项" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="49" Style="{StaticResource buttonStyle}" Click="Advance_Click"/>
+    </Grid>
+    <ListView x:Name="listView" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0">
       <ListView.View>
         <GridView>
           <GridViewColumn Header="信号类型" Width="60" DisplayMemberBinding="{Binding Path=Name}"/>
-          <GridViewColumn Header="主瓣中心频偏" Width="60" DisplayMemberBinding="{Binding Path=FrequenceDelta}"/>
+          <GridViewColumn Header="主瓣中心频偏(MHz)" Width="60" DisplayMemberBinding="{Binding Path=FrequenceDelta}"/>
+          <GridViewColumn Header="主瓣最大谱密度(dBW/Hz)" Width="60" DisplayMemberBinding="{Binding Path=PsdMax}"/>
+          <GridViewColumn Header="90%功率的带宽(MHz)" Width="60" DisplayMemberBinding="{Binding Path=NintyPercentBW}"/>
+          <GridViewColumn Header="带外的损失(dB)" Width="60" DisplayMemberBinding="{Binding Path=Waste}"/>
           <GridViewColumn Header="RMS带宽(MHz)" Width="60" DisplayMemberBinding="{Binding Path=BetaSq}"/>
           <GridViewColumn Header="等效矩形带宽(MHz)" Width="100" DisplayMemberBinding="{Binding Path=BetaRect}"/>
           <GridViewColumn Header="kls自身" Width="100" DisplayMemberBinding="{Binding Path=KlsWithSelf}"/>
           <GridViewColumn Header="kls与1.023MHzBPSK" Width="100" DisplayMemberBinding="{Binding Path=KlsWithBpsk}"/>
           <GridViewColumn Header="kls与BOC(10,5)" Width="100" DisplayMemberBinding="{Binding Path=KlsWithBoc}"/>
+          <GridViewColumn Header="自相关函数主峰与第一副峰间时延(ns)" Width="100" DisplayMemberBinding="{Binding Path=Delay}"/>
+          <GridViewColumn Header="自相关函数主峰与第一副峰幅度平方比" Width="100" DisplayMemberBinding="{Binding Path=PeakCompare}"/>
         </GridView>
       </ListView.View>
     </ListView>
-    <Button x:Name="saveButton" Content="保存" HorizontalAlignment="Left" Margin="680.5,48.433,0,0" VerticalAlignment="Top" Width="75" Style="{StaticResource buttonStyle}" Click="Save_Button_Click"/>
-    <TextBlock HorizontalAlignment="Left" Height="21.69" Margin="310.333,24.243,0,0" TextWrapping="NoWrap" Text="f:" VerticalAlignment="Top" Width="12.667"/>
-    <TextBlock HorizontalAlignment="Left" Height="21.69" Margin="307,48.313,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="11"><Run Text="α"/><Run Text=":"/></TextBlock>
-    <TextBlock HorizontalAlignment="Left" Height="21.69" Margin="474.833,48.313,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="11.667"><Run Text="β"/><Run Text=":"/></TextBlock>
   </Grid>
 </Window>

@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Animation;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using Microsoft.Win32;
+using System.IO;
 
 namespace SoftwareDesign_2017
 {
@@ -17,112 +13,44 @@ namespace SoftwareDesign_2017
     public partial class BeginWindow : Window
     {
 #region 字段
-        private Storyboard storyboard = new Storyboard();
-        private Context context = new Context();
+        private Storyboard storyboard = new Storyboard();//所有动画的故事板
+        private Context context = new Context();//用于数据绑定的实例
 #endregion
         public BeginWindow()
         {
             DataContext = context;
+            if (!File.Exists(@"../../bandWidth.txt"))//打开程序之后，检查是否已有参数文件，若无则创建并初始化
+            {
+                FileStream fileStream = new FileStream(@"../../bandWidth.txt", FileMode.Create, FileAccess.Write);
+                StreamWriter streamWriter = new StreamWriter(fileStream);
+                streamWriter.WriteLine("30000000,24000000,3000,2000");//初始化参数，从左到右依次为发射带宽，接收机前端带宽，psd序列点数，自相关序列点数
+                streamWriter.Close();
+                fileStream.Close();
+            }            
             InitializeComponent();
             InitializeAnimation();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 开始使用按钮的事件处理程序
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Begin_Button_Click(object sender, RoutedEventArgs e)
         {            
             storyboard.Begin(this);
         }
 
+        /// <summary>
+        /// 画图按钮的事件处理程序
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PaintButton_Click(object sender, RoutedEventArgs e)
         {
-            BPSK_Sequence_Generate bpskSequenceGenerate = new BPSK_Sequence_Generate(Convert.ToDouble(context.FrequenceBpsk), 2);//利用TextBox中输入的参数获取一个序列
-            BOC_Sequence_Generate bocSequenceGenerate = new BOC_Sequence_Generate(Convert.ToInt32(context.Alpha), Convert.ToInt32(context.Beta));//利用TextBox中输入的参数获取一个序列
-            NewThread newThread = new NewThread();
-
-            if (context.WhichMode)
-            {
-                if (context.TimeDomain)
-                {
-                    context.points = new List<Point>();
-                    newThread.whichFigure = "bpskTimeDomain";
-                }                    
-                else if (context.Psd)
-                {
-                    context.points = bpskSequenceGenerate.GetPsdSequenceRealDb;//把计算得到的点序列存到context类中
-                    newThread.whichFigure = "bpskPsd";
-                }                    
-                else if (context.Autocorrelation)
-                {
-                    context.points = bpskSequenceGenerate.GetAutocorrelationSequence;
-                    newThread.whichFigure = "bpskAutocorrelation";
-                }                    
-                if ((context.points != null) && (context.points.Count != 0))
-                {
-                    newThread.points = context.points;
-                    Thread thread = new Thread(new ThreadStart(newThread.StartThread));
-                    thread.SetApartmentState(ApartmentState.STA);
-                    thread.Start();
-                }
-                else
-                    MessageBox.Show("请先输入频率", "错误");
-            }
-            else
-            {
-                if (context.TimeDomain)
-                {
-                    context.points = new List<Point>();
-                    newThread.whichFigure = "bocTimeDomain";
-                }
-                else if (context.Psd)
-                {
-                    context.points = bocSequenceGenerate.GetPsdSequenceRealDb;//把计算得到的点序列存到context类中
-                    newThread.whichFigure = "bocPsd";
-                }
-                else if (context.Autocorrelation)
-                {
-                    context.points = bocSequenceGenerate.GetAutocorrelationSequence;
-                    newThread.whichFigure = "bocAutocorrelation";
-                }
-                if ((context.points != null) && (context.points.Count != 0))
-                {
-                    newThread.points = context.points;
-                    Thread thread = new Thread(new ThreadStart(newThread.StartThread));
-                    thread.SetApartmentState(ApartmentState.STA);
-                    thread.Start();
-                }
-                else
-                    MessageBox.Show("请先输入频率", "错误");
-            }
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            string url;//将要保存文件的路径
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "JPG格式(*.jpg)|*.jpg|JPEG格式(*.jpeg)|*.jpg|PNG格式(*.png)|*.png";
-            saveFileDialog.InitialDirectory = "C:\\";
-            saveFileDialog.ShowDialog();
-            url = saveFileDialog.FileName;
-
-            SavePic savePic = new SavePic();
-            //savePic.SaveVisual(, url);
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var control = sender as TextBox;
-            if (control == null)
-                return;
-            control.SelectAll();
-        }
-
-        private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var control = sender as TextBox;
-            if (control == null)
-                return;
-            Keyboard.Focus(control);
-            e.Handled = true;
+            var thread = new Thread(DrawGrapgicthreadStart);
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
 
         /// <summary>
@@ -131,41 +59,52 @@ namespace SoftwareDesign_2017
         private void InitializeAnimation()
         {
             //背景的动画，高度逐渐减少
-            DoubleAnimation animationBackground = new DoubleAnimation(80, new Duration(TimeSpan.FromSeconds(1)));
-            Storyboard.SetTargetName(animationBackground, backgroundField.Name);
-            Storyboard.SetTargetProperty(animationBackground, new PropertyPath(HeightProperty));
+            DoubleAnimation animationBackground = new DoubleAnimation(80, new Duration(TimeSpan.FromSeconds(1)));//创建新的线性动画，以下相同
+            Storyboard.SetTargetName(animationBackground, backgroundField.Name);//设定动画的作用对象，以下相同
+            Storyboard.SetTargetProperty(animationBackground, new PropertyPath(HeightProperty));//设定动画的作用属性
             //图片的动画，缓慢消失
             DoubleAnimation animationImage = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(1)));
             Storyboard.SetTargetName(animationImage, image.Name);
             Storyboard.SetTargetProperty(animationImage, new PropertyPath(OpacityProperty));
-            //输入控件的动画            
+            //输入控件的动画，延时之后逐渐显现
             DoubleAnimation aniBpskGrid = new DoubleAnimation(1, new Duration(TimeSpan.FromSeconds(1)));
             aniBpskGrid.BeginTime = TimeSpan.FromSeconds(1);
             Storyboard.SetTargetName(aniBpskGrid, controlGrid.Name);
             Storyboard.SetTargetProperty(aniBpskGrid, new PropertyPath(OpacityProperty));
 
-
-            storyboard.Children.Add(animationBackground);
+            storyboard.Children.Add(animationBackground);//将动画添加到故事板
             storyboard.Children.Add(animationImage);
             storyboard.Children.Add(aniBpskGrid);
         }
 
-        private void Psd_Button_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
+        /// <summary>
+        /// 查看参数按钮的事件处理程序
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewPara_Button_Click(object sender, RoutedEventArgs e)
         {
-            var thread = new Thread(threadStart);
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+            var thread = new Thread(ViewParathreadStart);//创建新的线程
+            thread.SetApartmentState(ApartmentState.STA);//设定线程的状态参数
+            thread.Start();//启动新的线程
         }
 
-        private void threadStart()
+        /// <summary>
+        /// 打开查看参数窗口
+        /// </summary>
+        private void ViewParathreadStart()
         {
             var viewPara = new ViewPara();
             viewPara.ShowDialog();
+        }
+
+        /// <summary>
+        /// 打开绘图窗口
+        /// </summary>
+        private void DrawGrapgicthreadStart()
+        {
+            var drawGraphic = new DrawGraphic();
+            drawGraphic.ShowDialog();
         }
     }    
 }
